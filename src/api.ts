@@ -5,8 +5,8 @@ dotenv.config();
 
 export const chatCompletion = async (
     messages: Message[],
-    functions: Function[]
-): Promise<Message | undefined> => {
+    functions?: Function[]
+): Promise<ResponseMessage | undefined> => {
     const body = JSON.stringify({
         model: "gpt-3.5-turbo-0613",
         messages,
@@ -24,5 +24,17 @@ export const chatCompletion = async (
     const data = await res.json();
 
     const choice = 0;
-    return data.choices[choice].message;
+    const message: ResponseMessage = data.choices[choice].message;
+
+    console.log(message);
+    return message;
+};
+
+type ResponseMessage = {
+    role: string;
+    content: string | null;
+    function_call: {
+        name: string;
+        arguments: string;
+    } | null;
 };
